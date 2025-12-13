@@ -1,0 +1,185 @@
+"use client";
+
+import PriceRangeSlider from "@/components/CustomSlider";
+import { CategoryEnum } from "@/enum/products";
+import { Category, Product } from "@/interfaces/products";
+import {
+  fetchProducts,
+  setSelectedProduct,
+} from "@/lib/features/products/productSlice";
+import { useAppDispatch } from "@/lib/store";
+import {
+  DEFAULT_PRICE_RANGE,
+  pageOptions,
+  pagination,
+} from "@/utils/properties";
+import { Search } from "@mui/icons-material";
+import {
+  FormControl,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material";
+import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+
+const ProductList = () => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { list, loading, total } = useSelector((state: any) => state.products);
+
+  const [page, setPage] = useState<number>(pagination.OFFSET);
+  const [limit, setLimit] = useState<number>(pagination.PAGE_LIMIT);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [category, setCategory] = useState<Category>();
+  const [priceRange, setPriceRange] = useState<number[]>(DEFAULT_PRICE_RANGE);
+
+  const categories = Object.values(CategoryEnum);
+
+  useEffect(() => {
+    const skip = page * limit;
+    const fetchLimit = searchTerm ? pagination.SEARCH_LIMIT : limit;
+
+    dispatch(
+      fetchProducts({
+        limit: fetchLimit,
+        skip,
+        searchTerm: searchTerm || undefined,
+        category: category || undefined,
+      })
+    );
+  }, [searchTerm, page, limit, category]);
+
+  const filteredRows: GridRowsProp = list
+    .filter((item: Product) => {
+      const price = item.price;
+      return price >= priceRange[0] && price <= priceRange[1];
+    })
+    .map((item: Product) => ({
+      id: item.id,
+      name: item.title,
+      description: item.description,
+      category: item.category,
+      price: item.price,
+      discountPercentage: item.discountPercentage,
+      rating: item.rating,
+      stock: item.stock,
+      thumbnail: item.thumbnail,
+      availabilityStatus: item.availabilityStatus,
+    }));
+
+  const columns: GridColDef[] = [
+    { field: "name", headerName: "Product Name", width: 300 },
+    { field: "description", headerName: "Description", width: 200 },
+    { field: "category", headerName: "Category", width: 100 },
+    { field: "price", headerName: "Price", width: 100 },
+    {
+      field: "discountPercentage",
+      headerName: "Discount Percentage",
+      width: 100,
+    },
+    {
+      field: "rating",
+      headerName: "Rating",
+      width: 100,
+    },
+    {
+      field: "stock",
+      headerName: "Stock",
+      width: 100,
+    },
+    {
+      field: "availabilityStatus",
+      headerName: "Availability Status",
+      width: 100,
+    },
+  ];
+
+  const handleChange = (event: SelectChangeEvent) =>
+    setCategory(event.target.value as Category);
+
+  const handleRowClick = (params: any) => {
+    dispatch(setSelectedProduct(params.row)); // store selected row
+    router.push(`/product-list/${params.row.id}`); // navigate to detail page
+  };
+
+  return (
+    <Grid container rowSpacing={2} columnSpacing={2}>
+      <Grid size={4}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="Search"
+          sx={{ background: "#fff" }}
+          value={searchTerm}
+          onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+            setSearchTerm(e.target.value)
+          }
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+      </Grid>
+      <Grid size={2}>
+        <FormControl fullWidth component={Paper}>
+          <InputLabel id="demo-simple-select-label">Category</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={category || ""}
+            label="Category"
+            onChange={handleChange}
+          >
+            <MenuItem value="">All</MenuItem>
+            {categories.map((cat) => (
+              <MenuItem key={cat} value={cat}>
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
+      <Grid size={6}>
+        <PriceRangeSlider
+          priceRange={priceRange}
+          setPriceRange={setPriceRange}
+          min={DEFAULT_PRICE_RANGE[0]}
+          max={DEFAULT_PRICE_RANGE[1]}
+        />
+      </Grid>
+      <Grid size={12}>
+        <div style={{ height: 700, width: "100%" }}>
+          <DataGrid
+            rows={filteredRows}
+            columns={columns}
+            onRowClick={handleRowClick}
+            rowCount={total}
+            paginationMode="server"
+            paginationModel={{ page, pageSize: limit }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setLimit(model.pageSize);
+            }}
+            loading={loading}
+            pageSizeOptions={pageOptions}
+          />
+        </div>
+      </Grid>
+    </Grid>
+  );
+};
+
+export default ProductList;
