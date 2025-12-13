@@ -5,11 +5,11 @@ import { alpha } from "@mui/material/styles";
 
 export const HeaderWrapper = styled(Box)(
   ({ theme }) => `
-        height: ${theme.header.height};
-        color: ${theme.header.textColor};
+        height: 80px;
+        color: #404040;
         right: 0;
         z-index: 7;
-        background-color: ${alpha(theme.header.background, 0.95)};
+        background-color: ${alpha("#fff", 0.95)};
         position: fixed;
         justify-content: space-between;
         width: 100%;

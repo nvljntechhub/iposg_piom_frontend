@@ -1,7 +1,8 @@
 "use client";
 
 import PriceRangeSlider from "@/components/CustomSlider";
-import { CategoryEnum } from "@/enum/products";
+import SearchInput from "@/components/input-fields/SearchInput";
+import CategorySelect from "@/components/products/CategorySelect";
 import { Category, Product } from "@/interfaces/products";
 import {
   fetchProducts,
@@ -13,21 +14,10 @@ import {
   pageOptions,
   pagination,
 } from "@/utils/properties";
-import { Search } from "@mui/icons-material";
-import {
-  FormControl,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  SelectChangeEvent,
-  TextField,
-} from "@mui/material";
+import { Grid, SelectChangeEvent } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const ProductList = () => {
@@ -38,10 +28,8 @@ const ProductList = () => {
   const [page, setPage] = useState<number>(pagination.OFFSET);
   const [limit, setLimit] = useState<number>(pagination.PAGE_LIMIT);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [category, setCategory] = useState<Category>();
+  const [category, setCategory] = useState("");
   const [priceRange, setPriceRange] = useState<number[]>(DEFAULT_PRICE_RANGE);
-
-  const categories = Object.values(CategoryEnum);
 
   useEffect(() => {
     const skip = page * limit;
@@ -102,7 +90,7 @@ const ProductList = () => {
     },
   ];
 
-  const handleChange = (event: SelectChangeEvent) =>
+  const handleCategoryChange = (event: SelectChangeEvent) =>
     setCategory(event.target.value as Category);
 
   const handleRowClick = (params: any) => {
@@ -113,44 +101,10 @@ const ProductList = () => {
   return (
     <Grid container rowSpacing={2} columnSpacing={2}>
       <Grid size={4}>
-        <TextField
-          fullWidth
-          variant="outlined"
-          placeholder="Search"
-          sx={{ background: "#fff" }}
-          value={searchTerm}
-          onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-            setSearchTerm(e.target.value)
-          }
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
+        <SearchInput value={searchTerm} setValue={setSearchTerm} />
       </Grid>
       <Grid size={2}>
-        <FormControl fullWidth component={Paper}>
-          <InputLabel id="demo-simple-select-label">Category</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={category || ""}
-            label="Category"
-            onChange={handleChange}
-          >
-            <MenuItem value="">All</MenuItem>
-            {categories.map((cat) => (
-              <MenuItem key={cat} value={cat}>
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <CategorySelect value={category} onChange={handleCategoryChange} />
       </Grid>
       <Grid size={6}>
         <PriceRangeSlider

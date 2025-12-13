@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import Providers from "./providers";
 import Header from "@/components/layouts/Header";
 import Sidebar from "@/components/layouts/Sidebar";
 import { Container } from "@mui/material";
 import { Poppins } from "next/font/google";
+import { ReactNode } from "react";
+import "./globals.css";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -22,18 +23,19 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${poppins.className} bg-background-default antialiased`}
-      >
+      <body className={`${poppins.className} antialiased`}>
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <Providers>
             <Header />
             <Sidebar />
-            <Container sx={{ marginTop: "100px", marginLeft: "400px" }}>
+            <Container
+              maxWidth="lg"
+              sx={{ marginTop: "100px", marginLeft: "400px" }}
+            >
               {children}
             </Container>
           </Providers>

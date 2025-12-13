@@ -31,10 +31,7 @@ export default function Sidebar() {
             <ListItemIcon>
               <ProductionQuantityLimits />
             </ListItemIcon>
-            <ListItemText
-              primary="Product"
-              sx={{ color: theme.colors.secondary.dark }}
-            />
+            <ListItemText primary="Product" />
           </ListItemButton>
         </ListItem>
         <ListItem>
@@ -42,10 +39,7 @@ export default function Sidebar() {
             <ListItemIcon>
               <Inventory2 />
             </ListItemIcon>
-            <ListItemText
-              primary="Orders"
-              sx={{ color: theme.colors.secondary.dark }}
-            />
+            <ListItemText primary="Orders" />
           </ListItemButton>
         </ListItem>
       </List>
@@ -59,6 +53,7 @@ export default function Sidebar() {
       <SidebarWrapper
         sx={{
           display: open ? "inline-block" : "none",
+          background: theme.sidebar.background,
         }}
       >
         {DrawerList}
