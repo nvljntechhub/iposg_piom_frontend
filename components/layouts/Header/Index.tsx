@@ -1,21 +1,20 @@
 "use client";
 
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import { toggleTheme } from "@/lib/features/ui/themeSlice";
+import { AppBar, FormControlLabel, Toolbar } from "@mui/material";
 import {
   HeaderTitle,
   HeaderWrapper,
   SidenavButton,
   StyledThemeToggle,
-} from "../Header.style";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
-import { toggleTheme } from "@/lib/features/ui/themeSlice";
+} from "./Style";
 
 export default function Header() {
   const dispatch = useDispatch();
   const mode = useSelector((state: RootState) => state.theme.mode);
+
   return (
     <HeaderWrapper>
       <AppBar position="static">

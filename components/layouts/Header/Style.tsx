@@ -2,12 +2,15 @@ import { ReactNode } from "react";
 import { Box, IconButton, styled, Switch, Typography } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 import { alpha } from "@mui/material/styles";
+import { useDispatch } from "react-redux";
+import { toggleSidebar } from "@/lib/features/ui/sidebarSlice";
 
 export const HeaderWrapper = styled(Box)(
   ({ theme }) => `
         height: 80px;
         color: #404040;
         right: 0;
+        top: 0;
         z-index: 7;
         background-color: ${alpha("#fff", 0.95)};
         position: fixed;
@@ -77,17 +80,22 @@ export const StyledThemeToggle = styled(Switch)(({ theme }) => ({
   },
 }));
 
-export const SidenavButton = () => (
-  <IconButton
-    size="large"
-    edge="start"
-    color="inherit"
-    aria-label="menu"
-    sx={{ mr: 2 }}
-  >
-    <Menu />
-  </IconButton>
-);
+export const SidenavButton = () => {
+  const dispatch = useDispatch();
+
+  return (
+    <IconButton
+      size="large"
+      edge="start"
+      color="inherit"
+      aria-label="menu"
+      sx={{ mr: 2 }}
+      onClick={() => dispatch(toggleSidebar())}
+    >
+      <Menu />
+    </IconButton>
+  );
+};
 
 export const HeaderTitle = (props: { children: ReactNode }) => (
   <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

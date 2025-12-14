@@ -1,39 +1,41 @@
 "use client";
 
-import PriceRangeSlider from "@/components/CustomSlider";
-import SearchInput from "@/components/input-fields/SearchInput";
-import CategorySelect from "@/components/products/CategorySelect";
-import { Category, Product } from "@/interfaces/products";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/lib/store";
 import {
   fetchProducts,
   setSelectedProduct,
 } from "@/lib/features/products/productSlice";
-import { useAppDispatch } from "@/lib/store";
-import {
-  DEFAULT_PRICE_RANGE,
-  pageOptions,
-  pagination,
-} from "@/utils/properties";
 import { Grid, SelectChangeEvent } from "@mui/material";
 import { GridRowsProp, GridColDef, DataGrid } from "@mui/x-data-grid";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import PriceRangeSlider from "@/components/products/PriceRangeSlider";
+import SearchInput from "@/components/input-fields/SearchInput";
+import SelectFilter from "@/components/input-fields/SelectFilter";
+import { Category, Product } from "@/interfaces/products";
+import { CategoryEnum } from "@/enum/products";
+import {
+  DEFAULT_PRICE_RANGE,
+  PAGINATION,
+  ROUTES_URL,
+} from "@/utils/properties";
+import { StyledTableContainer } from "@/components/common/Index";
 
 const ProductList = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { list, loading, total } = useSelector((state: any) => state.products);
 
-  const [page, setPage] = useState<number>(pagination.OFFSET);
-  const [limit, setLimit] = useState<number>(pagination.PAGE_LIMIT);
+  const [page, setPage] = useState<number>(PAGINATION.OFFSET);
+  const [limit, setLimit] = useState<number>(PAGINATION.PAGE_LIMIT);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [category, setCategory] = useState("");
   const [priceRange, setPriceRange] = useState<number[]>(DEFAULT_PRICE_RANGE);
 
   useEffect(() => {
     const skip = page * limit;
-    const fetchLimit = searchTerm ? pagination.SEARCH_LIMIT : limit;
+    const fetchLimit = searchTerm ? PAGINATION.SEARCH_LIMIT : limit;
 
     dispatch(
       fetchProducts({
@@ -43,7 +45,7 @@ const ProductList = () => {
         category: category || undefined,
       })
     );
-  }, [searchTerm, page, limit, category]);
+  }, [searchTerm, page, limit, category, dispatch]);
 
   const filteredRows: GridRowsProp = list
     .filter((item: Product) => {
@@ -94,8 +96,8 @@ const ProductList = () => {
     setCategory(event.target.value as Category);
 
   const handleRowClick = (params: any) => {
-    dispatch(setSelectedProduct(params.row)); // store selected row
-    router.push(`/product-list/${params.row.id}`); // navigate to detail page
+    dispatch(setSelectedProduct(params.row));
+    router.push(ROUTES_URL.PRODUCTS + `/${params.row.id}`);
   };
 
   return (
@@ -104,7 +106,12 @@ const ProductList = () => {
         <SearchInput value={searchTerm} setValue={setSearchTerm} />
       </Grid>
       <Grid size={2}>
-        <CategorySelect value={category} onChange={handleCategoryChange} />
+        <SelectFilter
+          label="Category"
+          value={category}
+          options={Object.values(CategoryEnum)}
+          onChange={handleCategoryChange}
+        />
       </Grid>
       <Grid size={6}>
         <PriceRangeSlider
@@ -115,7 +122,8 @@ const ProductList = () => {
         />
       </Grid>
       <Grid size={12}>
-        <div style={{ height: 700, width: "100%" }}>
+        <StyledTableContainer>
+          {" "}
           <DataGrid
             rows={filteredRows}
             columns={columns}
@@ -128,9 +136,9 @@ const ProductList = () => {
               setLimit(model.pageSize);
             }}
             loading={loading}
-            pageSizeOptions={pageOptions}
+            pageSizeOptions={PAGINATION.PAGE_OPTIONS}
           />
-        </div>
+        </StyledTableContainer>
       </Grid>
     </Grid>
   );

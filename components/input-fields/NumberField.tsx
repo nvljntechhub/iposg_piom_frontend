@@ -104,9 +104,6 @@ export default function NumberField({
           />
         )}
       />
-      <FormHelperText sx={{ ml: 0, "&:empty": { mt: 0 } }}>
-        Enter value over 0
-      </FormHelperText>
     </BaseNumberField.Root>
   );
 }
