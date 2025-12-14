@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ModalHeader from "./ModalHeader";
+import ModalHeader from "../common/ModalHeader";
 import { UPDATE_MODAL_TYPE } from "@/utils/properties";
 import { AvailabilityStatusEnum, UpdatingFieldsEnum } from "@/enum/products";
 import {
@@ -14,9 +14,9 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import NumberField from "./NumberField";
+import NumberField from "../input-fields/NumberField";
 import { AvailabilityStatus } from "@/interfaces/products";
-import { updateModalStyle } from "./Product.style";
+import { updateModalStyle } from ".";
 
 type Props = {
   isOpen: boolean;
@@ -39,11 +39,8 @@ export default function UpdateProductModal(props: Props) {
     );
 
   const availabilityStatuses = Object.values(AvailabilityStatusEnum);
-  console.log("currentAvailabilityStatus", currentAvailabilityStatus);
 
   const handleSubmit = () => {
-    console.log("currentStockValue", currentStockValue);
-
     onSubmit(
       isStockUpdate
         ? (currentStockValue as number)

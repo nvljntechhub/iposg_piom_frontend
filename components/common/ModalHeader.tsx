@@ -14,8 +14,8 @@ const ModalHeader = (props: Props) => {
   return (
     <Box
       sx={{
-        background: theme.colors.alpha.pumpkinOrange[100],
-        color: theme.colors.alpha.white[100],
+        background: theme.palette.primary.main,
+        color: "#fff",
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5,
       }}
@@ -41,8 +41,8 @@ const ModalHeader = (props: Props) => {
           <IconButton aria-label="close" onClick={handleClose}>
             <CloseTwoToneIcon
               sx={{
-                color: theme.colors.alpha.orange[100],
-                background: theme.colors.alpha.white[100],
+                color: theme.palette.primary.main,
+                background: "#fff",
                 borderRadius: 0.3,
               }}
             />

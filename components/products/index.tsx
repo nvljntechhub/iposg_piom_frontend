@@ -1,6 +1,7 @@
 import { AvailabilityStatusEnum } from "@/enum/products";
 import { Circle } from "@mui/icons-material";
-import { Chip } from "@mui/material";
+import { Card, Chip } from "@mui/material";
+import { ReactNode } from "react";
 
 export const AvailabilityChip = (props: {
   availabilityStatus: AvailabilityStatusEnum;
@@ -34,3 +35,7 @@ export const updateModalStyle = {
   boxShadow: 24,
   borderRadius: "8px",
 };
+
+export const StyledProductDetailsCard = (props: { children: ReactNode }) => (
+  <Card sx={{ padding: 3 }} {...props} />
+);
