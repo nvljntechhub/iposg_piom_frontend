@@ -1,4 +1,7 @@
 import { AvailabilityStatus, Product } from "@/interfaces/products";
+import { API_URLS } from "@/utils/properties";
+
+const productBaseURL = API_URLS.BASE_URL + API_URLS.PRODUCTS;
 
 export const fetchProductsAPI = async (
   limit: number,
@@ -9,11 +12,17 @@ export const fetchProductsAPI = async (
   let url = "";
 
   if (category) {
-    url = `https://dummyjson.com/products/category/${category}?limit=${limit}&skip=${skip}`;
+    url =
+      productBaseURL +
+      API_URLS.CATEGORY +
+      `/${category}?limit=${limit}&skip=${skip}`;
   } else if (searchTerm) {
-    url = `https://dummyjson.com/products/search?q=${searchTerm}&limit=${limit}&skip=${skip}`;
+    url =
+      productBaseURL +
+      API_URLS.SEARCH +
+      `?q=${searchTerm}&limit=${limit}&skip=${skip}`;
   } else {
-    url = `https://dummyjson.com/products?limit=${limit}&skip=${skip}`;
+    url = productBaseURL + `?limit=${limit}&skip=${skip}`;
   }
 
   const res = await fetch(url);
@@ -23,9 +32,6 @@ export const fetchProductsAPI = async (
 
   if (category && searchTerm && data.products) {
     data.products = data.products.filter((p: Product) => {
-      console.log("search term", searchTerm.toLowerCase());
-      console.log("title", p.title.toLowerCase());
-
       return p.title.toLowerCase().includes(searchTerm.toLowerCase());
     });
     data.total = data.products.length;
@@ -38,7 +44,7 @@ export const updateProductStockAPI = async (
   productId: number,
   stock: number
 ) => {
-  const res = await fetch(`https://dummyjson.com/products/${productId}`, {
+  const res = await fetch(productBaseURL + `/${productId}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -59,9 +65,7 @@ export const updateProductAvailabilityStatusAPI = async (
   productId: number,
   availabilityStatus: AvailabilityStatus
 ) => {
-  console.log("availabilityStatus", availabilityStatus);
-
-  const res = await fetch(`https://dummyjson.com/products/${productId}`, {
+  const res = await fetch(productBaseURL + `/${productId}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

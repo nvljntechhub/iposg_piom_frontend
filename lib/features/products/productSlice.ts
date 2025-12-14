@@ -3,8 +3,9 @@ import {
   fetchProductsAPI,
   updateProductAvailabilityStatusAPI,
   updateProductStockAPI,
-} from "./product.service";
+} from "@/services/product.service";
 import { AvailabilityStatus, Product } from "@/interfaces/products";
+import { SUCCESS_MESSAGES } from "@/utils/properties";
 
 export const fetchProducts = createAsyncThunk(
   "products/list",
@@ -64,6 +65,7 @@ interface InitialStateType {
   product: Product | null;
   loading: boolean;
   error: string | null;
+  successMessage: string | null;
   skip: number;
   limit: number;
   total: number;
@@ -74,6 +76,7 @@ const initialState: InitialStateType = {
   product: null,
   loading: false,
   error: null as string | null,
+  successMessage: null,
   skip: 0,
   limit: 10,
   total: 100,
@@ -89,6 +92,10 @@ const productSlice = createSlice({
     clearSelectedProduct: (state) => {
       state.product = null;
     },
+    clearMessages: (state) => {
+      state.error = null;
+      state.successMessage = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -102,6 +109,8 @@ const productSlice = createSlice({
       })
       .addCase(updateProductStock.pending, (state) => {
         state.loading = true;
+        state.error = null;
+        state.successMessage = null;
       })
       .addCase(updateProductStock.fulfilled, (state, action) => {
         state.loading = false;
@@ -109,9 +118,16 @@ const productSlice = createSlice({
         state.list = state.list.map((item: Product) =>
           item.id === action.payload.id ? action.payload : item
         );
+        state.successMessage = SUCCESS_MESSAGES.STOCK_UPDATED_SUCCESSFULLY;
+      })
+      .addCase(updateProductStock.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
       .addCase(updateProductAvailabilityStatus.pending, (state) => {
         state.loading = true;
+        state.error = null;
+        state.successMessage = null;
       })
       .addCase(updateProductAvailabilityStatus.fulfilled, (state, action) => {
         state.loading = false;
@@ -119,6 +135,7 @@ const productSlice = createSlice({
         state.list = state.list.map((item: Product) =>
           item.id === action.payload.id ? action.payload : item
         );
+        state.successMessage = SUCCESS_MESSAGES.STATUS_UPDATED_SUCCESSFULLY;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
@@ -130,3 +147,4 @@ const productSlice = createSlice({
 export const { setSelectedProduct, clearSelectedProduct } =
   productSlice.actions;
 export default productSlice.reducer;
+export const { clearMessages } = productSlice.actions;

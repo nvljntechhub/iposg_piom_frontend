@@ -30,11 +30,15 @@ import {
   StyledButton,
   StyledLoader,
 } from "@/components/common/Index";
+import { enqueueSnackbar } from "notistack";
+import { clearMessages } from "@/lib/features/products/productSlice";
 
 const ProductDetailsPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { product } = useSelector((state: any) => state.products);
+  const { product, error, successMessage } = useSelector(
+    (state: any) => state.products
+  );
 
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [updatingField, setUpdatingField] = useState<UpdatingFieldsEnum>();
@@ -42,6 +46,18 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     if (!product) router.push(ROUTES_URL.PRODUCTS);
   }, [product, router]);
+
+  useEffect(() => {
+    if (successMessage) {
+      enqueueSnackbar(successMessage, { variant: "success" });
+      dispatch(clearMessages());
+    }
+
+    if (error) {
+      enqueueSnackbar(error, { variant: "error" });
+      dispatch(clearMessages());
+    }
+  }, [successMessage, error, dispatch]);
 
   const handleUpdateStock = (value: number) => {
     dispatch(
@@ -60,6 +76,9 @@ const ProductDetailsPage = () => {
         availabilityStatus: value,
       })
     );
+    enqueueSnackbar("Successfully updated", {
+      variant: "success",
+    });
     handleModalClose();
   };
 

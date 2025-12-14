@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# IPOSG - Integrated Product & Order Management
 
-## Getting Started
+## 🚀 Project Overview
 
-First, run the development server:
+The **IPOSG (Integrated Product & Order Management System Gateway)** is a mid-scale React/Next.js application. It functions as a robust dashboard for managing product inventory and associated customer orders.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This application is built using **Next.js** for server-side rendering/static generation benefits, and leverages **Material UI (MUI)** for a professional, component-driven user interface. **Redux Toolkit** is used for scalable and predictable state management.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### GIT
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Public Repository:** https://github.com/nvljntechhub/iposg_piom_frontend
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Demo
 
-## Learn More
+- **Screen Recording:** https://www.loom.com/share/83d806017a864cee9e96ecc61f751baf
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📋 Core Functional Requirements Implementation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 1. Product List Page (`/products`)
 
-## Deploy on Vercel
+| Feature                | Implementation Details                                                                                                                                    |
+| :--------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Data Display**       | Material UI `DataGrid` component for a performant, enterprise-grade display.                                                                              |
+| **Search Filter**      | Text input to search by **Product Name**. Handled via **API call** (Server-side).                                                                         |
+| **Category Filter**    | MUI `Select` dropdown for filtering by `category`. Handled via **API call** (Server-side).                                                                |
+| **Price Range Filter** | MUI `Slider` component for filtering price range.(Client-side).                                                                                           |
+| **Pagination**         | **Server-side Pagination**. Parameters (`page`, `pageSize`, `filters`) are managed in Redux (`productSlice`) and passed as query strings in the API call. |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 2. Product Details Page (`/products/[id]`)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Feature                 | Implementation Details                                                                                                                                              |
+| :---------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Data Display**        | Displays **Image, Price, Description, Stock,** and **Ratings** (Read-only data).                                                                                    |
+| **Stock Update**        | Form field allowing input/update of the `stockQuantity`. Handled by the **`updateProductStock`** thunk.                                                             |
+| **Availability Toggle** | MUI `Switch` component to toggle the product **Active/Inactive status** (Toggles `availabilityStatus`). Handled by the **`updateProductAvailabilityStatus`** thunk. |
+| **API Call**            | **`createAsyncThunk`** is used for all updates, dispatching a **`PATCH`** request to the product resource to update stock or status attributes.                     |
+
+### 3. Order List Page (`/orders`)
+
+| Feature              | Implementation Details                                                                                                    |
+| :------------------- | :------------------------------------------------------------------------------------------------------------------------ |
+| **Data Fetching**    | Fetches related orders from a separate endpoint using the **`fetchOrders`** `createAsyncThunk`.                           |
+| **Data Display**     | Standard MUI `Table` component with sorting and filtering.                                                                |
+| **Status Badges**    | Implemented using the **`OrderStatusBadge`** reusable component for statuses (Pending / Shipped / Delivered / Cancelled). |
+| **State Management** | Dedicated **`orderSlice`** handles fetching and local (client-side) sorting/filtering logic.                              |
+
+---
+
+## 🛠️ Technical Stack & Dependencies
+
+- **Framework:** Next.js **(v16)**
+- **Language:** TypeScript
+- **UI Library:** Material UI (MUI v7)
+- **State Management:** Redux Toolkit (RTK)
+- **Form Management:** React Hook Form
+- **Toast Notifications:** MUI `Snackbar`
+- **Required Node.js Version:** **20.9.x**
+
+---
+
+## 💻 Setup and Installation
+
+### Prerequisites
+
+- Node.js (**v20.9.x**)
+- npm
+
+### Steps
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone https://github.com/nvljntechhub/iposg_piom_frontend.git
+    cd iposg
+    ```
+2.  **Install Dependencies:**
+    ```bash
+    npm install
+    ```
+3.  **Run the Development Server:**
+    ```bash
+    npm run dev
+    ```
+4.  Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+---
+
+## Author
+
+- Navalojanan Navaretnarajah

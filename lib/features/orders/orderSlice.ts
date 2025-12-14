@@ -1,5 +1,5 @@
 import { Order, OrderStatus } from "@/interfaces/order";
-import ordersData from "./orders.json";
+import ordersData from "@/services/orders.json";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface OrdersState {
